@@ -16,7 +16,7 @@ gmsh.initialize()
 # Let's merge an STL mesh that we would like to remesh (from the parent
 # directory):
 path = os.path.dirname(os.path.abspath(__file__))
-gmsh.merge(os.path.join(path, 'hollow_torus.stl'))
+gmsh.merge(os.path.join(path, 'table.stl'))
 
 # We first classify ("color") the surfaces by splitting the original surface
 # along sharp geometrical features. This will create new discrete surfaces,
@@ -28,8 +28,7 @@ angle = 40
 # For complex geometries, patches can be too complex, too elongated or too large
 # to be parametrized; setting the following option will force the creation of
 # patches that are amenable to reparametrization:
-forceParametrizablePatches = True
-
+forceParametrizablePatches = False
 # For open surfaces include the boundary edges in the classification process:
 includeBoundary = True
 
@@ -57,15 +56,14 @@ f = gmsh.model.mesh.field.add("MathEval")
 if funny:
     gmsh.model.mesh.field.setString(f, "F", "2*Sin((x+y)/5) + 3")
 else:
-    gmsh.model.mesh.field.setString(f, "F", "4")
+    gmsh.model.mesh.field.setString(f, "F", "0.02")
 gmsh.model.mesh.field.setAsBackgroundMesh(f)
 
 gmsh.model.mesh.generate(3)
-gmsh.write('test.msh')
+gmsh.write('table.msh')
 
 # Launch the GUI to see the results:
 if '-nopopup' not in sys.argv:
     gmsh.fltk.run()
 
 gmsh.finalize()
-

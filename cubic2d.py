@@ -64,7 +64,7 @@ class CalcMesh:
         # Создаём снапшот в файле с заданным именем
         writer = vtk.vtkXMLStructuredGridWriter()
         writer.SetInputDataObject(structuredGrid)
-        writer.SetFileName("cubic2d-step-" + str(snap_number) + ".vts")
+        writer.SetFileName("s1/cubic2d-step-" + str(snap_number) + ".vts")
         writer.Write()
 
 # Размер расчётной сетки, точек на сторону
