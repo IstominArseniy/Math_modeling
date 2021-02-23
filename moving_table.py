@@ -19,6 +19,10 @@ class CalcMesh:
         self.velocity = self.velocity = np.zeros(shape=(3, int(len(self.nodes[0]))), dtype=np.double)
         self.tetrs = np.array([tetrs_points[0::4], tetrs_points[1::4], tetrs_points[2::4], tetrs_points[3::4]])
         self.tetrs -= 1
+        self.nodes_for_movement = []
+        for i in range(int(len(self.velocity[0]))):
+            if self.nodes[2][i] < 0.54:
+                self.nodes_for_movement.append(i)
 
     # выставляем скалярное поле
     def set_scalar_field(self):
@@ -26,16 +30,19 @@ class CalcMesh:
 
     # выставляем векторное поле
     def set_vector_filed(self):
-        for i in range(int(len(self.velocity[0]))):
-            if self.nodes[2][i] < 0.54:
-                self.velocity[0][i] = np.sign(self.nodes[0][i]) * (0.54 - self.nodes[2][i]) ** 2
-                self.velocity[1][i] = np.sign(self.nodes[0][i]) * (0.54 - self.nodes[2][i]) ** 2
-                self.velocity[2][i] = 0.1
+        for i in self.nodes_for_movement:
+            self.velocity[0][i] = np.sign(self.nodes[0][i]) * (0.54 - self.nodes[2][i]) ** 2
+            self.velocity[1][i] = np.sign(self.nodes[1][i]) * (0.54 - self.nodes[2][i]) ** 2
+            self.velocity[2][i] = 0
 
     # Метод отвечает за выполнение для всей сетки шага по времени величиной tau
-    def move(self, tau):
+    def move(self, tau, step):
         # По сути метод просто двигает все точки c их текущими скоростями
         self.nodes += self.velocity * tau
+        for i in self.nodes_for_movement:
+            self.velocity[0][i] = 5 * np.sign(self.nodes[0][i]) * (0.54 - self.nodes[2][i]) ** 2 * np.cos(tau * step * 12)
+            self.velocity[1][i] = 5 * np.sign(self.nodes[1][i]) * (0.54 - self.nodes[2][i]) ** 2 * np.cos(tau * step * 12)
+            self.velocity[2][i] = 0.2 * np.cos(tau * step * 3)
 
     # Метод отвечает за запись текущего состояния сетки в снапшот в формате VTK
     def snapshot(self, snap_number):
@@ -81,7 +88,7 @@ class CalcMesh:
         # Создаём снапшот в файле с заданным именем
         writer = vtk.vtkXMLUnstructuredGridWriter()
         writer.SetInputDataObject(unstructuredGrid)
-        writer.SetFileName("table3d-step-" + str(snap_number) + ".vtu")
+        writer.SetFileName("table_movements/table3d-step-" + str(snap_number) + ".vtu")
         writer.Write()
 
 
@@ -153,6 +160,8 @@ assert(len(tetrsNodesTags) % 4 == 0)
 mesh = CalcMesh(nodesCoord, tetrsNodesTags)
 mesh.set_scalar_field()
 mesh.set_vector_filed()
-mesh.snapshot(0)
+for i in range(100):
+    mesh.snapshot(i)
+    mesh.move(0.05, i)
 
 gmsh.finalize()
