@@ -62,7 +62,7 @@ class CalcMesh:
         # Создаём снапшот в файле с заданным именем
         writer = vtk.vtkXMLStructuredGridWriter()
         writer.SetInputDataObject(structuredGrid)
-        writer.SetFileName("cubic3d-step-" + str(snap_number) + ".vts")
+        writer.SetFileName("s2/cubic3d-step-" + str(snap_number) + ".vts")
         writer.Write()
 
 

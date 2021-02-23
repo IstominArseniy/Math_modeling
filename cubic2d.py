@@ -46,11 +46,11 @@ class CalcMesh:
         for i in range(0, number):
             for j in range(0, number):
                 # Вставляем новую точку в сетку VTK-снапшота
-                points.InsertNextPoint(self.nodes[0][i,j], self.nodes[1][i,j], self.nodes[2][i,j])
+                points.InsertNextPoint(self.nodes[0][i, j], self.nodes[1][i, j], self.nodes[2][i, j])
                 # Добавляем значение скалярного поля в этой точке
-                smth.InsertNextValue(self.smth[i,j])
+                smth.InsertNextValue(self.smth[i, j])
                 # Добавляем значение векторного поля в этой точке
-                vel.InsertNextTuple((self.velocity[0][i,j], self.velocity[1][i,j], self.velocity[2][i,j]))
+                vel.InsertNextTuple((self.velocity[0][i, j], self.velocity[1][i, j], self.velocity[2][i, j]))
 
         # Задаём размеры VTK-сетки (в точках, по трём осям)
         structuredGrid.SetDimensions(number, number, 1)
