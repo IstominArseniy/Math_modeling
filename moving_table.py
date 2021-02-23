@@ -26,7 +26,8 @@ class CalcMesh:
 
     # выставляем скалярное поле
     def set_scalar_field(self):
-        self.smth = np.power(self.nodes[0, :], 2) + np.power(self.nodes[1, :], 2)
+        for i in range(int(len(self.nodes[0]))):
+            self.smth[i] = np.sin(self.nodes[2][i] / 0.6 * np.pi)
 
     # выставляем векторное поле
     def set_vector_filed(self):
@@ -39,6 +40,8 @@ class CalcMesh:
     def move(self, tau, step):
         # По сути метод просто двигает все точки c их текущими скоростями
         self.nodes += self.velocity * tau
+        for i in range(int(len(self.nodes[0]))):
+            self.smth[i] = np.sin(self.nodes[2][i] / 0.6 * np.pi + tau * step * 12)
         for i in self.nodes_for_movement:
             self.velocity[0][i] = 5 * np.sign(self.nodes[0][i]) * (0.54 - self.nodes[2][i]) ** 2 * np.cos(tau * step * 12)
             self.velocity[1][i] = 5 * np.sign(self.nodes[1][i]) * (0.54 - self.nodes[2][i]) ** 2 * np.cos(tau * step * 12)
